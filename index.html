@@ -821,11 +821,11 @@
                 description: 'Basic facility and date information for spray operations',
                 fields: {
                     spray_date: { label: 'Date of Spray Operation', type: 'date' },
-                    gps_location: { label: 'GPS Location', type: 'gps' },
                     region: { label: 'Region', type: 'cascading', level: 1 },
                     district: { label: 'District', type: 'cascading', level: 2 },
                     chiefdom: { label: 'Chiefdom', type: 'cascading', level: 3 },
-                    nearest_phu: { label: 'Nearest PHU', type: 'text' }
+                    nearest_phu: { label: 'Nearest PHU', type: 'text' },
+                    gps_location: { label: 'GPS Location (Optional)', type: 'gps', required: false }
                 }
             },
             'Spray Operators': {
@@ -1067,14 +1067,14 @@ Western Area Urban District||West 1 Zone`;
                                 <div class="gps-status">
                                     <div class="gps-icon" id="gps_icon"></div>
                                     <div>
-                                        <div class="gps-info" id="gps_status">Click button to capture GPS location</div>
+                                        <div class="gps-info" id="gps_status">Click button to capture GPS location (Optional - 2 minute timeout)</div>
                                         <div class="gps-coords" id="gps_coords"></div>
                                     </div>
                                 </div>
                                 <button type="button" class="gps-btn" id="gps_capture_btn" onclick="captureGPS()">📍 CAPTURE GPS LOCATION</button>
                             </div>
-                            <input type="hidden" name="gps_latitude" id="gps_latitude" ${required ? 'required' : ''}>
-                            <input type="hidden" name="gps_longitude" id="gps_longitude" ${required ? 'required' : ''}>
+                            <input type="hidden" name="gps_latitude" id="gps_latitude">
+                            <input type="hidden" name="gps_longitude" id="gps_longitude">
                             <input type="hidden" name="gps_accuracy" id="gps_accuracy">
                             <input type="hidden" name="gps_timestamp" id="gps_timestamp">
                         `;
@@ -1295,8 +1295,7 @@ Western Area Urban District||West 1 Zone`;
                 syncPendingSubmissions();
             }
             
-            // Auto-capture GPS location
-            autoCapturGPS();
+            // GPS is now optional - users click button to capture
         }
 
         function handleViewData() {
@@ -1652,22 +1651,10 @@ Western Area Urban District||West 1 Zone`;
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 10000,
+                    timeout: 120000, // 2 minutes (120 seconds)
                     maximumAge: 0
                 }
             );
-        }
-
-        // Auto-capture GPS when showing first section (optional)
-        function autoCapturGPS() {
-            if (navigator.geolocation && state.isLoggedIn && state.currentSection === 1) {
-                setTimeout(() => {
-                    const gpsBtn = document.getElementById('gps_capture_btn');
-                    if (gpsBtn) {
-                        captureGPS();
-                    }
-                }, 1500);
-            }
         }
 
         init();
