@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IRS Data Collection - Daily Spray Operator Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     
     <style>
         * {
@@ -438,6 +439,116 @@
             min-height: 100px;
         }
 
+        /* SIGNATURE PAD */
+        .signature-container {
+            border: 2px solid #004080;
+            border-radius: 6px;
+            background: #ffffff;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .signature-canvas {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: #ffffff;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .signature-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .signature-btn {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Oswald', Arial, sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .signature-btn:hover {
+            background: #c82333;
+        }
+
+        /* GPS LOCATION */
+        .gps-container {
+            background: #e7f3ff;
+            border: 2px solid #004080;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .gps-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .gps-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #28a745;
+        }
+
+        .gps-icon.loading {
+            background: #ffc107;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .gps-icon.error {
+            background: #dc3545;
+        }
+
+        .gps-info {
+            font-size: 12px;
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .gps-coords {
+            font-size: 11px;
+            color: #004080;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .gps-btn {
+            padding: 8px 16px;
+            background: #004080;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Oswald', Arial, sans-serif;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .gps-btn:hover {
+            background: #0056b3;
+        }
+
+        .gps-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         /* NAVIGATION */
         .navigation-buttons {
             display: flex;
@@ -710,6 +821,7 @@
                 description: 'Basic facility and date information for spray operations',
                 fields: {
                     spray_date: { label: 'Date of Spray Operation', type: 'date' },
+                    gps_location: { label: 'GPS Location', type: 'gps' },
                     region: { label: 'Region', type: 'cascading', level: 1 },
                     district: { label: 'District', type: 'cascading', level: 2 },
                     chiefdom: { label: 'Chiefdom', type: 'cascading', level: 3 },
@@ -721,17 +833,17 @@
                 fields: {
                     team_number: { label: 'Team Number', type: 'text' },
                     operator_1_name: { label: 'Spray Operator 1 - Name', type: 'text' },
-                    operator_1_signature: { label: 'Spray Operator 1 - Signature', type: 'text' },
+                    operator_1_signature: { label: 'Spray Operator 1 - Signature', type: 'signature' },
                     operator_2_name: { label: 'Spray Operator 2 - Name', type: 'text' },
-                    operator_2_signature: { label: 'Spray Operator 2 - Signature', type: 'text' },
+                    operator_2_signature: { label: 'Spray Operator 2 - Signature', type: 'signature' },
                     operator_3_name: { label: 'Spray Operator 3 - Name', type: 'text' },
-                    operator_3_signature: { label: 'Spray Operator 3 - Signature', type: 'text' },
+                    operator_3_signature: { label: 'Spray Operator 3 - Signature', type: 'signature' },
                     operator_4_name: { label: 'Spray Operator 4 - Name', type: 'text', required: false },
-                    operator_4_signature: { label: 'Spray Operator 4 - Signature', type: 'text', required: false },
+                    operator_4_signature: { label: 'Spray Operator 4 - Signature', type: 'signature', required: false },
                     operator_5_name: { label: 'Spray Operator 5 - Name', type: 'text', required: false },
-                    operator_5_signature: { label: 'Spray Operator 5 - Signature', type: 'text', required: false },
+                    operator_5_signature: { label: 'Spray Operator 5 - Signature', type: 'signature', required: false },
                     operator_6_name: { label: 'Spray Operator 6 - Name', type: 'text', required: false },
-                    operator_6_signature: { label: 'Spray Operator 6 - Signature', type: 'text', required: false }
+                    operator_6_signature: { label: 'Spray Operator 6 - Signature', type: 'signature', required: false }
                 }
             },
             'Facility Information': {
@@ -798,17 +910,17 @@
                 description: 'National monitoring team information (up to 6 monitors)',
                 fields: {
                     monitor_1_name: { label: 'National Monitor 1 - Name', type: 'text' },
-                    monitor_1_signature: { label: 'National Monitor 1 - Signature', type: 'text' },
+                    monitor_1_signature: { label: 'National Monitor 1 - Signature', type: 'signature' },
                     monitor_2_name: { label: 'National Monitor 2 - Name', type: 'text', required: false },
-                    monitor_2_signature: { label: 'National Monitor 2 - Signature', type: 'text', required: false },
+                    monitor_2_signature: { label: 'National Monitor 2 - Signature', type: 'signature', required: false },
                     monitor_3_name: { label: 'National Monitor 3 - Name', type: 'text', required: false },
-                    monitor_3_signature: { label: 'National Monitor 3 - Signature', type: 'text', required: false },
+                    monitor_3_signature: { label: 'National Monitor 3 - Signature', type: 'signature', required: false },
                     monitor_4_name: { label: 'National Monitor 4 - Name', type: 'text', required: false },
-                    monitor_4_signature: { label: 'National Monitor 4 - Signature', type: 'text', required: false },
+                    monitor_4_signature: { label: 'National Monitor 4 - Signature', type: 'signature', required: false },
                     monitor_5_name: { label: 'National Monitor 5 - Name', type: 'text', required: false },
-                    monitor_5_signature: { label: 'National Monitor 5 - Signature', type: 'text', required: false },
+                    monitor_5_signature: { label: 'National Monitor 5 - Signature', type: 'signature', required: false },
                     monitor_6_name: { label: 'National Monitor 6 - Name', type: 'text', required: false },
-                    monitor_6_signature: { label: 'National Monitor 6 - Signature', type: 'text', required: false }
+                    monitor_6_signature: { label: 'National Monitor 6 - Signature', type: 'signature', required: false }
                 }
             },
             'Additional Notes': {
@@ -851,7 +963,9 @@ Western Area Urban District||West 1 Zone`;
             currentSection: 1,
             totalSections: 0,
             regionDistrictMap: {},
-            districtChiefdomMap: {}
+            districtChiefdomMap: {},
+            signaturePads: {},
+            gpsLocation: null
         };
 
         // ============================================
@@ -935,7 +1049,36 @@ Western Area Urban District||West 1 Zone`;
                     html += '<div class="form-group">';
                     html += `<label class="form-label">${label.toUpperCase()} ${required ? '<span class="required">*</span>' : ''}</label>`;
                     
-                    if (type === 'yesno') {
+                    if (type === 'signature') {
+                        // Signature pad
+                        html += `
+                            <div class="signature-container">
+                                <canvas class="signature-canvas" id="${fieldName}_canvas" data-field="${fieldName}"></canvas>
+                                <div class="signature-controls">
+                                    <button type="button" class="signature-btn" onclick="clearSignature('${fieldName}')">CLEAR</button>
+                                </div>
+                            </div>
+                            <input type="hidden" name="${fieldName}" id="${fieldName}" ${required ? 'required' : ''}>
+                        `;
+                    } else if (type === 'gps') {
+                        // GPS Location
+                        html += `
+                            <div class="gps-container">
+                                <div class="gps-status">
+                                    <div class="gps-icon" id="gps_icon"></div>
+                                    <div>
+                                        <div class="gps-info" id="gps_status">Click button to capture GPS location</div>
+                                        <div class="gps-coords" id="gps_coords"></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="gps-btn" id="gps_capture_btn" onclick="captureGPS()">📍 CAPTURE GPS LOCATION</button>
+                            </div>
+                            <input type="hidden" name="gps_latitude" id="gps_latitude" ${required ? 'required' : ''}>
+                            <input type="hidden" name="gps_longitude" id="gps_longitude" ${required ? 'required' : ''}>
+                            <input type="hidden" name="gps_accuracy" id="gps_accuracy">
+                            <input type="hidden" name="gps_timestamp" id="gps_timestamp">
+                        `;
+                    } else if (type === 'yesno') {
                         html += `
                             <select class="form-select" name="${fieldName}" ${required ? 'required' : ''}>
                                 <option value="">Select...</option>
@@ -995,6 +1138,11 @@ Western Area Urban District||West 1 Zone`;
             
             container.innerHTML = html;
             updateProgress();
+            
+            // Initialize signature pads after a short delay
+            setTimeout(() => {
+                initializeSignaturePads();
+            }, 100);
         }
 
         function setupEventListeners() {
@@ -1146,6 +1294,9 @@ Western Area Urban District||West 1 Zone`;
             if (state.isOnline && state.pendingSubmissions.length > 0) {
                 syncPendingSubmissions();
             }
+            
+            // Auto-capture GPS location
+            autoCapturGPS();
         }
 
         function handleViewData() {
@@ -1283,6 +1434,24 @@ Western Area Urban District||West 1 Zone`;
         function clearForm() {
             document.getElementById('dataForm').reset();
             
+            // Clear signature pads
+            Object.keys(state.signaturePads).forEach(fieldName => {
+                clearSignature(fieldName);
+            });
+            
+            // Clear GPS data
+            state.gpsLocation = null;
+            const gpsIcon = document.getElementById('gps_icon');
+            const gpsStatus = document.getElementById('gps_status');
+            const gpsCoords = document.getElementById('gps_coords');
+            const gpsBtn = document.getElementById('gps_capture_btn');
+            
+            if (gpsIcon) gpsIcon.className = 'gps-icon';
+            if (gpsStatus) gpsStatus.textContent = 'Click button to capture GPS location';
+            if (gpsCoords) gpsCoords.textContent = '';
+            if (gpsBtn) gpsBtn.textContent = '📍 CAPTURE GPS LOCATION';
+            
+            // Clear cascading dropdowns
             const districtSelect = document.getElementById('districtSelect');
             const chiefdomSelect = document.getElementById('chiefdomSelect');
             
@@ -1304,6 +1473,11 @@ Western Area Urban District||West 1 Zone`;
             
             updateProgress();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Re-initialize signature pads
+            setTimeout(() => {
+                initializeSignaturePads();
+            }, 100);
         }
 
         function showNotification(message, type) {
@@ -1316,6 +1490,184 @@ Western Area Urban District||West 1 Zone`;
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 4000);
+        }
+
+        // ============================================
+        // SIGNATURE PAD FUNCTIONS
+        // ============================================
+        function initializeSignaturePads() {
+            const canvases = document.querySelectorAll('.signature-canvas');
+            
+            canvases.forEach(canvas => {
+                const fieldName = canvas.getAttribute('data-field');
+                
+                // Set canvas size
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth - 20;
+                canvas.height = 150;
+                
+                // Initialize SignaturePad
+                const signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgb(255, 255, 255)',
+                    penColor: 'rgb(0, 0, 0)',
+                    minWidth: 1,
+                    maxWidth: 3
+                });
+                
+                // Store reference
+                state.signaturePads[fieldName] = signaturePad;
+                
+                // Update hidden input when signature changes
+                signaturePad.addEventListener('endStroke', () => {
+                    const hiddenInput = document.getElementById(fieldName);
+                    if (hiddenInput) {
+                        hiddenInput.value = signaturePad.toDataURL();
+                    }
+                });
+            });
+        }
+
+        function clearSignature(fieldName) {
+            const signaturePad = state.signaturePads[fieldName];
+            if (signaturePad) {
+                signaturePad.clear();
+                const hiddenInput = document.getElementById(fieldName);
+                if (hiddenInput) {
+                    hiddenInput.value = '';
+                }
+            }
+        }
+
+        function resizeSignaturePads() {
+            Object.keys(state.signaturePads).forEach(fieldName => {
+                const canvas = document.getElementById(`${fieldName}_canvas`);
+                if (canvas && canvas.parentElement) {
+                    const signaturePad = state.signaturePads[fieldName];
+                    const data = signaturePad.toData();
+                    
+                    const container = canvas.parentElement;
+                    canvas.width = container.offsetWidth - 20;
+                    canvas.height = 150;
+                    
+                    signaturePad.fromData(data);
+                }
+            });
+        }
+
+        // Resize signature pads on window resize
+        window.addEventListener('resize', resizeSignaturePads);
+
+        // ============================================
+        // GPS FUNCTIONS
+        // ============================================
+        function captureGPS() {
+            const statusIcon = document.getElementById('gps_icon');
+            const statusText = document.getElementById('gps_status');
+            const coordsText = document.getElementById('gps_coords');
+            const captureBtn = document.getElementById('gps_capture_btn');
+            
+            if (!navigator.geolocation) {
+                showNotification('GPS not supported by your browser', 'error');
+                if (statusIcon) statusIcon.classList.add('error');
+                if (statusText) statusText.textContent = 'GPS not supported';
+                return;
+            }
+            
+            // Show loading state
+            if (statusIcon) statusIcon.classList.add('loading');
+            if (statusText) statusText.textContent = 'Capturing GPS location...';
+            if (captureBtn) {
+                captureBtn.disabled = true;
+                captureBtn.textContent = '⏳ CAPTURING...';
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    // Success
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    const timestamp = new Date(position.timestamp).toISOString();
+                    
+                    // Store in state
+                    state.gpsLocation = {
+                        latitude,
+                        longitude,
+                        accuracy,
+                        timestamp
+                    };
+                    
+                    // Update hidden inputs
+                    const latInput = document.getElementById('gps_latitude');
+                    const lonInput = document.getElementById('gps_longitude');
+                    const accInput = document.getElementById('gps_accuracy');
+                    const timeInput = document.getElementById('gps_timestamp');
+                    
+                    if (latInput) latInput.value = latitude;
+                    if (lonInput) lonInput.value = longitude;
+                    if (accInput) accInput.value = accuracy;
+                    if (timeInput) timeInput.value = timestamp;
+                    
+                    // Update UI
+                    if (statusIcon) {
+                        statusIcon.classList.remove('loading');
+                        statusIcon.classList.add('online');
+                    }
+                    if (statusText) statusText.textContent = 'GPS location captured successfully!';
+                    if (coordsText) coordsText.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                    if (captureBtn) {
+                        captureBtn.disabled = false;
+                        captureBtn.textContent = '✓ GPS CAPTURED';
+                    }
+                    
+                    showNotification('GPS location captured successfully', 'success');
+                },
+                (error) => {
+                    // Error
+                    if (statusIcon) {
+                        statusIcon.classList.remove('loading');
+                        statusIcon.classList.add('error');
+                    }
+                    
+                    let errorMessage = 'Failed to capture GPS location';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'GPS permission denied. Please enable location access.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'GPS position unavailable. Please try again.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'GPS request timed out. Please try again.';
+                            break;
+                    }
+                    
+                    if (statusText) statusText.textContent = errorMessage;
+                    if (captureBtn) {
+                        captureBtn.disabled = false;
+                        captureBtn.textContent = '📍 TRY AGAIN';
+                    }
+                    
+                    showNotification(errorMessage, 'error');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        // Auto-capture GPS when showing first section (optional)
+        function autoCapturGPS() {
+            if (navigator.geolocation && state.isLoggedIn && state.currentSection === 1) {
+                setTimeout(() => {
+                    const gpsBtn = document.getElementById('gps_capture_btn');
+                    if (gpsBtn) {
+                        captureGPS();
+                    }
+                }, 1500);
+            }
         }
 
         init();
