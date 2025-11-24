@@ -252,6 +252,7 @@
             justify-content: space-between;
             gap: 10px;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         .control-btn {
@@ -273,6 +274,17 @@
             color: #ffffff;
         }
 
+        .control-btn.draft-btn {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #000000;
+        }
+
+        .control-btn.draft-btn:hover {
+            background: #e0a800;
+            border-color: #e0a800;
+        }
+
         /* STATUS BAR */
         .status-bar {
             background: #ffffff;
@@ -283,6 +295,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .status-item {
@@ -319,6 +333,16 @@
             font-size: 12px;
             font-weight: 700;
             border: 2px solid #004080;
+        }
+
+        .draft-count {
+            background: #ffc107;
+            color: #000000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 2px solid #ffc107;
         }
 
         /* FORM CARD */
@@ -501,7 +525,7 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #28a745;
+            background: #6c757d;
         }
 
         .gps-icon.loading {
@@ -509,8 +533,17 @@
             animation: pulse 1s ease-in-out infinite;
         }
 
+        .gps-icon.success {
+            background: #28a745;
+        }
+
         .gps-icon.error {
             background: #dc3545;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .gps-info {
@@ -554,6 +587,7 @@
             display: flex;
             gap: 15px;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .btn-nav {
@@ -567,6 +601,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-family: 'Oswald', Arial, sans-serif;
+            min-width: 120px;
         }
 
         .btn-back {
@@ -590,19 +625,42 @@
             color: #ffffff;
         }
 
-        .btn-primary {
+        .btn-draft {
+            background: #ffc107;
+            color: #000000;
+            border-color: #ffc107;
+        }
+
+        .btn-draft:hover {
+            background: #e0a800;
+            border-color: #e0a800;
+        }
+
+        .btn-finalize {
+            background: #17a2b8;
+            color: #ffffff;
+            border-color: #17a2b8;
+        }
+
+        .btn-finalize:hover {
+            background: #138496;
+            border-color: #138496;
+        }
+
+        .btn-submit {
             background: #28a745;
             color: #ffffff;
             border-color: #28a745;
         }
 
-        .btn-primary:hover:not(:disabled) {
+        .btn-submit:hover:not(:disabled) {
             background: #218838;
             border-color: #218838;
             color: #ffffff;
         }
 
-        .btn-primary:disabled {
+        .btn-submit:disabled,
+        .btn-finalize:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
@@ -655,10 +713,147 @@
             border-left: 4px solid #004080;
         }
 
+        .notification.warning {
+            border-left: 4px solid #ffc107;
+        }
+
         .notification-text {
             color: #000000;
             font-size: 14px;
             font-weight: 700;
+        }
+
+        /* DRAFTS MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 4px double #004080;
+        }
+
+        .modal-header {
+            background: #004080;
+            color: #ffffff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .draft-item {
+            background: #f8f9fa;
+            border: 2px solid #004080;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .draft-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .draft-item-title {
+            font-weight: 700;
+            color: #004080;
+        }
+
+        .draft-item-date {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .draft-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .draft-action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Oswald', Arial, sans-serif;
+            border: none;
+        }
+
+        .draft-action-btn.load {
+            background: #004080;
+            color: #ffffff;
+        }
+
+        .draft-action-btn.delete {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        .no-drafts {
+            text-align: center;
+            color: #6c757d;
+            padding: 40px;
+            font-size: 14px;
+        }
+
+        /* Form Status Badge */
+        .form-status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .form-status-badge.draft {
+            background: #ffc107;
+            color: #000000;
+        }
+
+        .form-status-badge.finalized {
+            background: #17a2b8;
+            color: #ffffff;
         }
 
         /* RESPONSIVE */
@@ -684,6 +879,14 @@
             .notification {
                 left: 20px;
                 right: 20px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .btn-nav {
+                width: 100%;
             }
         }
     </style>
@@ -753,6 +956,7 @@
             <!-- CONTROLS -->
             <div class="controls-bar">
                 <button class="control-btn" id="viewDataBtn">📊 VIEW DATA</button>
+                <button class="control-btn draft-btn" id="viewDraftsBtn">📝 VIEW DRAFTS</button>
                 <button class="control-btn" id="logoutBtn">LOGOUT</button>
             </div>
 
@@ -763,7 +967,11 @@
                     <span class="status-text" id="statusText">CHECKING...</span>
                 </div>
                 <div class="status-item">
-                    <span style="color: #ffffff; font-size: 14px;">PENDING:</span>
+                    <span style="color: #000000; font-size: 12px;">DRAFTS:</span>
+                    <span class="draft-count" id="draftCount">0</span>
+                </div>
+                <div class="status-item">
+                    <span style="color: #000000; font-size: 12px;">PENDING:</span>
                     <span class="pending-count" id="pendingCount">0</span>
                 </div>
             </div>
@@ -774,9 +982,11 @@
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                     </div>
-                    <div class="progress-text" id="progressText">SECTION 1 OF 8</div>
+                    <div class="progress-text" id="progressText">SECTION 1 OF 8 <span id="formStatusBadge"></span></div>
 
                     <form id="dataForm">
+                        <input type="hidden" name="form_status" id="form_status" value="draft">
+                        <input type="hidden" name="draft_id" id="draft_id" value="">
                         <div id="dynamicSections"></div>
                     </form>
                 </div>
@@ -788,6 +998,19 @@
                 <p>Ministry of Health and Sanitation, Sierra Leone</p>
                 <p style="font-size: 11px;">Medical Stores Compound, Freetown, Sierra Leone</p>
                 <p style="font-size: 10px;">© 2025 Informatics Consultancy Firm-Sierra Leone (ICF-SL)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DRAFTS MODAL -->
+    <div class="modal-overlay" id="draftsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">📝 SAVED DRAFTS</span>
+                <button class="modal-close" onclick="closeDraftsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="draftsModalBody">
+                <!-- Drafts will be loaded here -->
             </div>
         </div>
     </div>
@@ -814,6 +1037,234 @@
         };
 
         // ============================================
+        // COMPLETE CASCADING DATA FOR SIERRA LEONE
+        // ============================================
+        const CASCADING_DATA = `Eastern Region||Kailahun District
+Eastern Region||Kenema District
+Eastern Region||Kono District
+Northern Region||Bombali District
+Northern Region||Falaba District
+Northern Region||Koinadugu District
+Northern Region||Tonkolili District
+North West Region||Kambia District
+North West Region||Karene District
+North West Region||Port Loko District
+Southern Region||Bo District
+Southern Region||Bonthe District
+Southern Region||Moyamba District
+Southern Region||Pujehun District
+Western Area||Western Area Urban District
+Western Area||Western Area Rural District
+Bo District||Bo City
+Bo District||Badjia Chiefdom
+Bo District||Bagbwe Chiefdom
+Bo District||Baoma Chiefdom
+Bo District||Bargbo Chiefdom
+Bo District||Bongor Chiefdom
+Bo District||Bumpe Ngao Chiefdom
+Bo District||Gbo Chiefdom
+Bo District||Jaiama Chiefdom
+Bo District||Kakua Chiefdom
+Bo District||Komboya Chiefdom
+Bo District||Lugbu Chiefdom
+Bo District||Niawa Lenga Chiefdom
+Bo District||Selenga Chiefdom
+Bo District||Tikonko Chiefdom
+Bo District||Valunia Chiefdom
+Bo District||Wonde Chiefdom
+Bombali District||Biriwa Chiefdom
+Bombali District||Bombali Sebora Chiefdom
+Bombali District||Bombali Serry Chiefdom
+Bombali District||Gbanti (Bombali) Chiefdom
+Bombali District||Gbendembu Chiefdom
+Bombali District||Kamaranka Chiefdom
+Bombali District||Magbaimba Ndohahun Chiefdom
+Bombali District||Makarie Chiefdom
+Bombali District||Mara Chiefdom
+Bombali District||Ngowahun Chiefdom
+Bombali District||Paki Masabong Chiefdom
+Bombali District||Safroko Limba Chiefdom
+Bombali District||Makeni City
+Bonthe District||Bendu-Cha Chiefdom
+Bonthe District||Bum Chiefdom
+Bonthe District||Dema Chiefdom
+Bonthe District||Imperi Chiefdom
+Bonthe District||Jong Chiefdom
+Bonthe District||Kpanda Kemoh Chiefdom
+Bonthe District||Kwamebai Krim Chiefdom
+Bonthe District||Nongoba Bullom Chiefdom
+Bonthe District||Sittia Chiefdom
+Bonthe District||Sogbini Chiefdom
+Bonthe District||Yawbeko Chiefdom
+Bonthe District||Bonthe Town
+Falaba District||Barawa Wollay Chiefdom
+Falaba District||Delmandugu Chiefdom
+Falaba District||Dembelia-Sinkunia Chiefdom
+Falaba District||Folosaba Dembelia Chiefdom
+Falaba District||Folosaba Kamba Chiefdom
+Falaba District||Kabelia Chiefdom
+Falaba District||Kamadugu Yiraia Chiefdom
+Falaba District||Kulor Saradu Chiefdom
+Falaba District||Mongo Chiefdom
+Falaba District||Morifindu Chiefdom
+Falaba District||Neya Chiefdom
+Falaba District||Nyedu Chiefdom
+Falaba District||Sulima Chiefdom
+Kailahun District||Dea Chiefdom
+Kailahun District||Jahn Chiefdom
+Kailahun District||Jawei Chiefdom
+Kailahun District||Kissi Kama Chiefdom
+Kailahun District||Kissi Teng Chiefdom
+Kailahun District||Kissi Tongi Chiefdom
+Kailahun District||Luawa Chiefdom
+Kailahun District||Malema Chiefdom
+Kailahun District||Mandu Chiefdom
+Kailahun District||Njaluahun Chiefdom
+Kailahun District||Peje Bongre Chiefdom
+Kailahun District||Peje West Chiefdom
+Kailahun District||Penguia Chiefdom
+Kailahun District||Upper Bambara Chiefdom
+Kailahun District||Yawei Chiefdom
+Kambia District||Bramaia Chiefdom
+Kambia District||Dixon Chiefdom
+Kambia District||Gbinleh Chiefdom
+Kambia District||Konimaka Chiefdom
+Kambia District||Magbema Chiefdom
+Kambia District||Mambolo Chiefdom
+Kambia District||Masumgbala Chiefdom
+Kambia District||Munu Thalla Chiefdom
+Kambia District||Samu Chiefdom
+Kambia District||Tonko Limba Chiefdom
+Karene District||Buya Chiefdom
+Karene District||Dibia Chiefdom
+Karene District||Gbanti (Karene) Chiefdom
+Karene District||Gormbahun Chiefdom
+Karene District||Mafonda Makerembay Chiefdom
+Karene District||Romende Chiefdom
+Karene District||Safroko Chiefdom
+Karene District||Sanda Loko Chiefdom
+Karene District||Sanda Magbolonthor Chiefdom
+Karene District||Sanda Tendaren Chiefdom
+Karene District||Sella Limba Chiefdom
+Karene District||Tambaka Simibungie Chiefdom
+Karene District||Tambaka Yobangie Chiefdom
+Kenema District||Kenema City
+Kenema District||Dama Chiefdom
+Kenema District||Dodo Chiefdom
+Kenema District||Gaura Chiefdom
+Kenema District||Gorama Mende Chiefdom
+Kenema District||Kandu Leppiama Chiefdom
+Kenema District||Koya (Kenema) Chiefdom
+Kenema District||Langroma Chiefdom
+Kenema District||Lower Bambara Chiefdom
+Kenema District||Malegohun Chiefdom
+Kenema District||Niawa Chiefdom
+Kenema District||Nomo Chiefdom
+Kenema District||Nongowa Chiefdom
+Kenema District||Simbaru Chiefdom
+Kenema District||Small Bo Chiefdom
+Kenema District||Tunkia Chiefdom
+Kenema District||Wandor Chiefdom
+Koinadugu District||Diang Chiefdom
+Koinadugu District||Gbonkorbor Kayaka Chiefdom
+Koinadugu District||Kallian Chiefdom
+Koinadugu District||Kamukeh Chiefdom
+Koinadugu District||Kasunko Kakellay Chiefdom
+Koinadugu District||Nieni Chiefdom
+Koinadugu District||Sengbeh Chiefdom
+Koinadugu District||Thamiso Chiefdom
+Koinadugu District||Wara Wara Bafodia Chiefdom
+Koinadugu District||Wara Wara Yagala Chiefdom
+Kono District||Koidu New Sembehun City
+Kono District||Fiama Chiefdom
+Kono District||Gbane Chiefdom
+Kono District||Gbane Kandor Chiefdom
+Kono District||Gbense Chiefdom
+Kono District||Gorama Kono Chiefdom
+Kono District||Kamara Chiefdom
+Kono District||Lei Chiefdom
+Kono District||Mafindor Chiefdom
+Kono District||Nimikoro Chiefdom
+Kono District||Nimiyama Chiefdom
+Kono District||Sandor Chiefdom
+Kono District||Soa Chiefdom
+Kono District||Tankoro Chiefdom
+Kono District||Toli Chiefdom
+Moyamba District||Bagruwa Chiefdom
+Moyamba District||Bumpeh Chiefdom
+Moyamba District||Dasse Chiefdom
+Moyamba District||Fakunya Chiefdom
+Moyamba District||Kaiyamba Chiefdom
+Moyamba District||Kamajei Chiefdom
+Moyamba District||Kargboro Chiefdom
+Moyamba District||Kongbora Chiefdom
+Moyamba District||Kori Chiefdom
+Moyamba District||Kowa Chiefdom
+Moyamba District||Lower Banta Chiefdom
+Moyamba District||Ribbi Chiefdom
+Moyamba District||Timdale Chiefdom
+Moyamba District||Upper Banta Chiefdom
+Port Loko District||Port Loko City
+Port Loko District||Bake-Loko Chiefdom
+Port Loko District||Bureh Chiefdom
+Port Loko District||Kaffu Bullom Chiefdom
+Port Loko District||Kamasondo Chiefdom
+Port Loko District||Kasseh Chiefdom
+Port Loko District||Koya (Port Loko) Chiefdom
+Port Loko District||Lokomasama Chiefdom
+Port Loko District||Maconteh Chiefdom
+Port Loko District||Maforki Chiefdom
+Port Loko District||Makama Chiefdom
+Port Loko District||Marampa Chiefdom
+Port Loko District||Masimera Chiefdom
+Port Loko District||Tainkatopa Chiefdom
+Pujehun District||Barri Chiefdom
+Pujehun District||Galliness Chiefdom
+Pujehun District||Kabonde Chiefdom
+Pujehun District||Kpaka Chiefdom
+Pujehun District||Kpanga Chiefdom
+Pujehun District||Kpanga Krim Chiefdom
+Pujehun District||Makpele Chiefdom
+Pujehun District||Malen Chiefdom
+Pujehun District||Mano Sakrim Chiefdom
+Pujehun District||Peje Chiefdom
+Pujehun District||Perri Chiefdom
+Pujehun District||Soro Gbeima Chiefdom
+Pujehun District||Sowa Chiefdom
+Pujehun District||Yakemoh Kpukumu Krim Chiefdom
+Tonkolili District||Dansogoia Chiefdom
+Tonkolili District||Gbokolenken Masankong Chiefdom
+Tonkolili District||Gbokolenken Mayeppoh Chiefdom
+Tonkolili District||Gbokolenken Polie Chiefdom
+Tonkolili District||Gbokolenken Yele Chiefdom
+Tonkolili District||Kafe Chiefdom
+Tonkolili District||Kalantuba Chiefdom
+Tonkolili District||Kholifa Mabang Chiefdom
+Tonkolili District||Kholifa Mamuntha Chiefdom
+Tonkolili District||Kholifa Rowalla Chiefdom
+Tonkolili District||Kunike Barina Chiefdom
+Tonkolili District||Kunike Fulawusu Chiefdom
+Tonkolili District||Kunike Sanda Chiefdom
+Tonkolili District||Malal Chiefdom
+Tonkolili District||Sambaya Bendugu Chiefdom
+Tonkolili District||Simiria Chiefdom
+Tonkolili District||Tane Chiefdom
+Tonkolili District||Yoni Mabanta Chiefdom
+Tonkolili District||Yoni Mamala Chiefdom
+Western Area Rural District||Koya Rural Zone
+Western Area Rural District||Mountain Rural Zone
+Western Area Rural District||Waterloo Rural Zone
+Western Area Rural District||York Rural Zone
+Western Area Urban District||Central 1 Zone
+Western Area Urban District||Central 2 Zone
+Western Area Urban District||East 1 Zone
+Western Area Urban District||East 2 Zone
+Western Area Urban District||East 3 Zone
+Western Area Urban District||West 1 Zone
+Western Area Urban District||West 2 Zone
+Western Area Urban District||West 3 Zone`;
+
+        // ============================================
         // FORM SECTIONS DEFINITION
         // ============================================
         const FORM_SECTIONS = {
@@ -823,9 +1274,8 @@
                     spray_date: { label: 'Date of Spray Operation', type: 'date' },
                     region: { label: 'Region', type: 'cascading', level: 1 },
                     district: { label: 'District', type: 'cascading', level: 2 },
-                    chiefdom: { label: 'Chiefdom', type: 'cascading', level: 3 },
-                    nearest_phu: { label: 'Nearest PHU', type: 'text' },
-                    gps_location: { label: 'GPS Location (Optional)', type: 'gps', required: false }
+                    chiefdom: { label: 'Chiefdom/Zone', type: 'cascading', level: 3 },
+                    nearest_phu: { label: 'Nearest PHU', type: 'text' }
                 }
             },
             'Spray Operators': {
@@ -891,18 +1341,16 @@
             'Insecticide Information': {
                 description: 'Details about insecticide used',
                 fields: {
-                    insecticide_sachets_mixed: { label: 'Total Number of Sachets Mixed', type: 'number' },
-                    insecticide_serial_number: { label: 'Insecticide Serial Number', type: 'text' },
                     insecticide_type: { 
                         label: 'Type of Insecticide', 
                         type: 'select',
                         options: [
-                            'Pyrethroids',
-                            'Organophosphates',
-                            'Carbamates',
-                            'Other'
+                            'Actellic 300CS',
+                            'Vectron T500'
                         ]
                     },
+                    insecticide_sachets_mixed: { label: 'Total Number of Sachets Mixed', type: 'number' },
+                    insecticide_serial_number: { label: 'Insecticide Serial Number', type: 'text' },
                     insecticide_batch_number: { label: 'Batch Number', type: 'text' }
                 }
             },
@@ -923,41 +1371,23 @@
                     monitor_6_signature: { label: 'National Monitor 6 - Signature', type: 'signature', required: false }
                 }
             },
-            'Additional Notes': {
-                description: 'Any additional observations or notes',
+            'Additional Notes & GPS': {
+                description: 'Any additional observations, notes, and GPS location',
                 fields: {
                     observations: { label: 'Observations', type: 'textarea', required: false },
                     challenges_faced: { label: 'Challenges Faced', type: 'textarea', required: false },
-                    recommendations: { label: 'Recommendations', type: 'textarea', required: false }
+                    recommendations: { label: 'Recommendations', type: 'textarea', required: false },
+                    gps_location: { label: 'GPS Location (Optional)', type: 'gps', required: false }
                 }
             }
         };
-
-        // ============================================
-        // CASCADING DATA
-        // ============================================
-        const CASCADING_DATA = `Eastern Region||Kailahun District
-Eastern Region||Kenema District
-Eastern Region||Kono District
-Northern Region||Bombali District
-Northern Region||Tonkolili District
-Western Area||Western Area Urban District
-Western Area||Western Area Rural District
-Kailahun District||Dea Chiefdom
-Kailahun District||Luawa Chiefdom
-Kenema District||Kenema City
-Kenema District||Dama Chiefdom
-Bombali District||Makeni City
-Bombali District||Biriwa Chiefdom
-Western Area Urban District||Central 1 Zone
-Western Area Urban District||East 1 Zone
-Western Area Urban District||West 1 Zone`;
 
         // ============================================
         // STATE
         // ============================================
         const state = {
             pendingSubmissions: [],
+            drafts: [],
             isOnline: navigator.onLine,
             isLoggedIn: false,
             currentSection: 1,
@@ -965,19 +1395,32 @@ Western Area Urban District||West 1 Zone`;
             regionDistrictMap: {},
             districtChiefdomMap: {},
             signaturePads: {},
-            gpsLocation: null
+            gpsLocation: null,
+            formStatus: 'draft', // draft, finalized, submitted
+            currentDraftId: null
         };
 
         // ============================================
         // INITIALIZATION
         // ============================================
         function init() {
-            const saved = localStorage.getItem('pendingSubmissions');
-            if (saved) {
+            // Load pending submissions
+            const savedPending = localStorage.getItem('pendingSubmissions');
+            if (savedPending) {
                 try {
-                    state.pendingSubmissions = JSON.parse(saved);
+                    state.pendingSubmissions = JSON.parse(savedPending);
                 } catch (e) {
                     state.pendingSubmissions = [];
+                }
+            }
+
+            // Load drafts
+            const savedDrafts = localStorage.getItem('formDrafts');
+            if (savedDrafts) {
+                try {
+                    state.drafts = JSON.parse(savedDrafts);
+                } catch (e) {
+                    state.drafts = [];
                 }
             }
 
@@ -1000,6 +1443,7 @@ Western Area Urban District||West 1 Zone`;
                 if (parts.length === 2) {
                     const [parent, child] = parts.map(s => s.trim());
                     
+                    // Check if parent is a region (contains "Region" or is "Western Area")
                     if (parent.includes('Region') || parent === 'Western Area') {
                         if (!state.regionDistrictMap[parent]) {
                             state.regionDistrictMap[parent] = [];
@@ -1008,6 +1452,7 @@ Western Area Urban District||West 1 Zone`;
                             state.regionDistrictMap[parent].push(child);
                         }
                     } else {
+                        // It's a district -> chiefdom mapping
                         if (!state.districtChiefdomMap[parent]) {
                             state.districtChiefdomMap[parent] = [];
                         }
@@ -1097,7 +1542,7 @@ Western Area Urban District||West 1 Zone`;
                         if (fieldConfig.level === 1) {
                             html += `<select class="form-select" name="${fieldName}" id="regionSelect" ${required ? 'required' : ''}>`;
                             html += '<option value="">Select region...</option>';
-                            Object.keys(state.regionDistrictMap).forEach(region => {
+                            Object.keys(state.regionDistrictMap).sort().forEach(region => {
                                 html += `<option value="${region}">${region}</option>`;
                             });
                             html += '</select>';
@@ -1123,15 +1568,25 @@ Western Area Urban District||West 1 Zone`;
                     html += '</div>';
                 });
                 
-                html += `
-                    <div class="navigation-buttons">
-                        ${sectionNum > 1 ? '<button type="button" class="btn-nav btn-back" onclick="previousSection()">← BACK</button>' : ''}
-                        ${isLastSection 
-                            ? '<button type="submit" class="btn-nav btn-primary" id="submitBtn">SUBMIT DATA ✓</button>'
-                            : '<button type="button" class="btn-nav btn-next" onclick="nextSection()">NEXT SECTION →</button>'
-                        }
-                    </div>
-                </div>`;
+                // Navigation buttons
+                html += '<div class="navigation-buttons">';
+                
+                if (sectionNum > 1) {
+                    html += '<button type="button" class="btn-nav btn-back" onclick="previousSection()">← BACK</button>';
+                }
+                
+                // Always show Save as Draft button
+                html += '<button type="button" class="btn-nav btn-draft" onclick="saveAsDraft()">💾 SAVE DRAFT</button>';
+                
+                if (isLastSection) {
+                    // Last section: Show Finalize and Submit buttons
+                    html += '<button type="button" class="btn-nav btn-finalize" id="finalizeBtn" onclick="finalizeForm()">✓ FINALIZE</button>';
+                    html += '<button type="submit" class="btn-nav btn-submit" id="submitBtn" disabled>📤 SUBMIT</button>';
+                } else {
+                    html += '<button type="button" class="btn-nav btn-next" onclick="nextSection()">NEXT →</button>';
+                }
+                
+                html += '</div></div>';
                 
                 sectionNum++;
             });
@@ -1149,6 +1604,7 @@ Western Area Urban District||West 1 Zone`;
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
             document.getElementById('viewDataBtn').addEventListener('click', handleViewData);
+            document.getElementById('viewDraftsBtn').addEventListener('click', openDraftsModal);
             document.getElementById('dataForm').addEventListener('submit', handleFormSubmit);
             window.addEventListener('online', handleOnlineEvent);
             window.addEventListener('offline', handleOfflineEvent);
@@ -1182,7 +1638,7 @@ Western Area Urban District||West 1 Zone`;
             if (region && state.regionDistrictMap[region]) {
                 districtSelect.disabled = false;
                 
-                state.regionDistrictMap[region].forEach(district => {
+                state.regionDistrictMap[region].sort().forEach(district => {
                     const option = document.createElement('option');
                     option.value = district;
                     option.textContent = district;
@@ -1197,12 +1653,12 @@ Western Area Urban District||West 1 Zone`;
             const district = e.target.value;
             const chiefdomSelect = document.getElementById('chiefdomSelect');
             
-            chiefdomSelect.innerHTML = '<option value="">Select chiefdom...</option>';
+            chiefdomSelect.innerHTML = '<option value="">Select chiefdom/zone...</option>';
             
             if (district && state.districtChiefdomMap[district]) {
                 chiefdomSelect.disabled = false;
                 
-                state.districtChiefdomMap[district].forEach(chiefdom => {
+                state.districtChiefdomMap[district].sort().forEach(chiefdom => {
                     const option = document.createElement('option');
                     option.value = chiefdom;
                     option.textContent = chiefdom;
@@ -1256,7 +1712,15 @@ Western Area Urban District||West 1 Zone`;
         function updateProgress() {
             const progress = (state.currentSection / state.totalSections) * 100;
             document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = `SECTION ${state.currentSection} OF ${state.totalSections}`;
+            
+            let statusBadge = '';
+            if (state.formStatus === 'draft') {
+                statusBadge = '<span class="form-status-badge draft">DRAFT</span>';
+            } else if (state.formStatus === 'finalized') {
+                statusBadge = '<span class="form-status-badge finalized">FINALIZED</span>';
+            }
+            
+            document.getElementById('progressText').innerHTML = `SECTION ${state.currentSection} OF ${state.totalSections} ${statusBadge}`;
         }
 
         function handleLogin(e) {
@@ -1268,6 +1732,7 @@ Western Area Urban District||West 1 Zone`;
             
             if (username === CONFIG.LOGIN_USERNAME && password === CONFIG.LOGIN_PASSWORD) {
                 sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', username);
                 state.isLoggedIn = true;
                 errorDiv.classList.remove('show');
                 showMainContent();
@@ -1278,6 +1743,7 @@ Western Area Urban District||West 1 Zone`;
 
         function handleLogout() {
             sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('username');
             state.isLoggedIn = false;
             document.getElementById('mainContent').classList.remove('show');
             document.getElementById('loginScreen').style.display = 'flex';
@@ -1290,12 +1756,11 @@ Western Area Urban District||West 1 Zone`;
             document.getElementById('mainContent').classList.add('show');
             updateOnlineStatus();
             updatePendingCount();
+            updateDraftCount();
             
             if (state.isOnline && state.pendingSubmissions.length > 0) {
                 syncPendingSubmissions();
             }
-            
-            // GPS is now optional - users click button to capture
         }
 
         function handleViewData() {
@@ -1336,21 +1801,277 @@ Western Area Urban District||West 1 Zone`;
             document.getElementById('pendingCount').textContent = state.pendingSubmissions.length;
         }
 
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        function updateDraftCount() {
+            document.getElementById('draftCount').textContent = state.drafts.length;
+        }
 
-            const formData = new FormData(e.target);
+        // ============================================
+        // DRAFT MANAGEMENT
+        // ============================================
+        function saveAsDraft() {
+            const formData = new FormData(document.getElementById('dataForm'));
             
             const data = {
-                timestamp: new Date().toISOString(),
-                submittedBy: sessionStorage.getItem('username') || 'admin'
+                draftId: state.currentDraftId || generateDraftId(),
+                savedAt: new Date().toISOString(),
+                savedBy: sessionStorage.getItem('username') || 'admin',
+                formStatus: 'draft',
+                currentSection: state.currentSection
             };
             
             for (const [key, value] of formData.entries()) {
                 data[key] = value;
             }
             
+            // Save signature data
+            Object.keys(state.signaturePads).forEach(fieldName => {
+                const pad = state.signaturePads[fieldName];
+                if (pad && !pad.isEmpty()) {
+                    data[fieldName] = pad.toDataURL();
+                }
+            });
+            
+            // Check if updating existing draft
+            const existingIndex = state.drafts.findIndex(d => d.draftId === data.draftId);
+            if (existingIndex !== -1) {
+                state.drafts[existingIndex] = data;
+            } else {
+                state.drafts.push(data);
+            }
+            
+            localStorage.setItem('formDrafts', JSON.stringify(state.drafts));
+            state.currentDraftId = data.draftId;
+            document.getElementById('draft_id').value = data.draftId;
+            
+            updateDraftCount();
+            showNotification('Draft saved successfully!', 'success');
+        }
+
+        function generateDraftId() {
+            return 'draft_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function openDraftsModal() {
+            const modal = document.getElementById('draftsModal');
+            const modalBody = document.getElementById('draftsModalBody');
+            
+            if (state.drafts.length === 0) {
+                modalBody.innerHTML = '<div class="no-drafts">No saved drafts</div>';
+            } else {
+                let html = '';
+                state.drafts.forEach((draft, index) => {
+                    const savedDate = new Date(draft.savedAt).toLocaleString();
+                    const facilityName = draft.facility_name || 'Unnamed';
+                    const sprayDate = draft.spray_date || 'No date';
+                    
+                    html += `
+                        <div class="draft-item">
+                            <div class="draft-item-header">
+                                <div>
+                                    <div class="draft-item-title">${facilityName}</div>
+                                    <div class="draft-item-date">Spray Date: ${sprayDate}</div>
+                                </div>
+                                <div class="draft-item-date">Saved: ${savedDate}</div>
+                            </div>
+                            <div class="draft-item-actions">
+                                <button class="draft-action-btn load" onclick="loadDraft('${draft.draftId}')">📂 LOAD</button>
+                                <button class="draft-action-btn delete" onclick="deleteDraft('${draft.draftId}')">🗑️ DELETE</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                modalBody.innerHTML = html;
+            }
+            
+            modal.classList.add('show');
+        }
+
+        function closeDraftsModal() {
+            document.getElementById('draftsModal').classList.remove('show');
+        }
+
+        function loadDraft(draftId) {
+            const draft = state.drafts.find(d => d.draftId === draftId);
+            if (!draft) {
+                showNotification('Draft not found', 'error');
+                return;
+            }
+            
+            // Clear form first
+            clearForm(false);
+            
+            // Load draft data
+            state.currentDraftId = draftId;
+            state.formStatus = draft.formStatus || 'draft';
+            document.getElementById('draft_id').value = draftId;
+            document.getElementById('form_status').value = state.formStatus;
+            
+            // Populate form fields
+            Object.keys(draft).forEach(key => {
+                if (['draftId', 'savedAt', 'savedBy', 'formStatus', 'currentSection'].includes(key)) return;
+                
+                const field = document.querySelector(`[name="${key}"]`);
+                if (field) {
+                    if (field.type === 'hidden' && key.includes('signature')) {
+                        // Handle signature fields
+                        const canvas = document.getElementById(`${key}_canvas`);
+                        if (canvas && draft[key]) {
+                            const pad = state.signaturePads[key];
+                            if (pad) {
+                                const img = new Image();
+                                img.onload = () => {
+                                    const ctx = canvas.getContext('2d');
+                                    ctx.drawImage(img, 0, 0);
+                                };
+                                img.src = draft[key];
+                                field.value = draft[key];
+                            }
+                        }
+                    } else {
+                        field.value = draft[key];
+                    }
+                }
+            });
+            
+            // Handle cascading dropdowns
+            if (draft.region) {
+                const regionSelect = document.getElementById('regionSelect');
+                if (regionSelect) {
+                    regionSelect.value = draft.region;
+                    regionSelect.dispatchEvent(new Event('change'));
+                    
+                    setTimeout(() => {
+                        if (draft.district) {
+                            const districtSelect = document.getElementById('districtSelect');
+                            if (districtSelect) {
+                                districtSelect.value = draft.district;
+                                districtSelect.dispatchEvent(new Event('change'));
+                                
+                                setTimeout(() => {
+                                    if (draft.chiefdom) {
+                                        const chiefdomSelect = document.getElementById('chiefdomSelect');
+                                        if (chiefdomSelect) {
+                                            chiefdomSelect.value = draft.chiefdom;
+                                        }
+                                    }
+                                }, 100);
+                            }
+                        }
+                    }, 100);
+                }
+            }
+            
+            // Go to saved section
+            if (draft.currentSection) {
+                document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+                state.currentSection = draft.currentSection;
+                const targetSection = document.querySelector(`.form-section[data-section="${draft.currentSection}"]`);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            }
+            
+            updateProgress();
+            updateSubmitButton();
+            closeDraftsModal();
+            showNotification('Draft loaded successfully!', 'success');
+        }
+
+        function deleteDraft(draftId) {
+            if (!confirm('Are you sure you want to delete this draft?')) return;
+            
+            state.drafts = state.drafts.filter(d => d.draftId !== draftId);
+            localStorage.setItem('formDrafts', JSON.stringify(state.drafts));
+            
+            if (state.currentDraftId === draftId) {
+                state.currentDraftId = null;
+                document.getElementById('draft_id').value = '';
+            }
+            
+            updateDraftCount();
+            openDraftsModal(); // Refresh modal
+            showNotification('Draft deleted', 'info');
+        }
+
+        // ============================================
+        // FINALIZE & SUBMIT
+        // ============================================
+        function finalizeForm() {
+            // Validate all required fields across all sections
+            let isValid = true;
+            let firstInvalidSection = null;
+            
+            document.querySelectorAll('.form-section').forEach((section, index) => {
+                const inputs = section.querySelectorAll('input[required], select[required], textarea[required]');
+                inputs.forEach(input => {
+                    if (!input.value) {
+                        isValid = false;
+                        input.style.borderColor = '#dc3545';
+                        if (firstInvalidSection === null) {
+                            firstInvalidSection = index + 1;
+                        }
+                    }
+                });
+            });
+            
+            if (!isValid) {
+                showNotification(`Please complete all required fields. Check Section ${firstInvalidSection}`, 'error');
+                // Navigate to first invalid section
+                document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+                state.currentSection = firstInvalidSection;
+                document.querySelector(`.form-section[data-section="${firstInvalidSection}"]`).classList.add('active');
+                updateProgress();
+                return;
+            }
+            
+            state.formStatus = 'finalized';
+            document.getElementById('form_status').value = 'finalized';
+            updateProgress();
+            updateSubmitButton();
+            
+            // Auto-save draft with finalized status
+            saveAsDraft();
+            
+            showNotification('Form finalized! You can now submit.', 'success');
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const finalizeBtn = document.getElementById('finalizeBtn');
+            
+            if (state.formStatus === 'finalized') {
+                submitBtn.disabled = false;
+                finalizeBtn.disabled = true;
+                finalizeBtn.textContent = '✓ FINALIZED';
+            } else {
+                submitBtn.disabled = true;
+                finalizeBtn.disabled = false;
+                finalizeBtn.textContent = '✓ FINALIZE';
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (state.formStatus !== 'finalized') {
+                showNotification('Please finalize the form before submitting', 'warning');
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            
+            const data = {
+                timestamp: new Date().toISOString(),
+                submittedBy: sessionStorage.getItem('username') || 'admin',
+                form_status: 'submitted'
+            };
+            
+            for (const [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Calculate totals
             data.total_sprayed = (parseInt(data.sprayed_male || 0) + parseInt(data.sprayed_female || 0));
             data.total_unsprayed = (parseInt(data.unsprayed_male || 0) + parseInt(data.unsprayed_female || 0));
             data.total_population = data.total_sprayed + data.total_unsprayed;
@@ -1377,8 +2098,15 @@ Western Area Urban District||West 1 Zone`;
                     body: JSON.stringify(data)
                 });
 
+                // Remove from drafts if it was a draft
+                if (state.currentDraftId) {
+                    state.drafts = state.drafts.filter(d => d.draftId !== state.currentDraftId);
+                    localStorage.setItem('formDrafts', JSON.stringify(state.drafts));
+                    updateDraftCount();
+                }
+
                 showNotification('Data submitted successfully!', 'success');
-                clearForm();
+                clearForm(true);
                 
             } catch (error) {
                 console.error('Submit error:', error);
@@ -1386,16 +2114,24 @@ Western Area Urban District||West 1 Zone`;
                 saveOffline(data);
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'SUBMIT DATA ✓';
+                submitBtn.textContent = '📤 SUBMIT';
             }
         }
 
         function saveOffline(data) {
             state.pendingSubmissions.push(data);
             localStorage.setItem('pendingSubmissions', JSON.stringify(state.pendingSubmissions));
+            
+            // Remove from drafts
+            if (state.currentDraftId) {
+                state.drafts = state.drafts.filter(d => d.draftId !== state.currentDraftId);
+                localStorage.setItem('formDrafts', JSON.stringify(state.drafts));
+                updateDraftCount();
+            }
+            
             updatePendingCount();
             showNotification('Data saved offline - Will sync when online', 'info');
-            clearForm();
+            clearForm(true);
         }
 
         async function syncPendingSubmissions() {
@@ -1430,7 +2166,7 @@ Western Area Urban District||West 1 Zone`;
             }
         }
 
-        function clearForm() {
+        function clearForm(resetStatus = true) {
             document.getElementById('dataForm').reset();
             
             // Clear signature pads
@@ -1463,6 +2199,15 @@ Western Area Urban District||West 1 Zone`;
                 chiefdomSelect.disabled = true;
             }
             
+            // Reset form status
+            if (resetStatus) {
+                state.formStatus = 'draft';
+                state.currentDraftId = null;
+                document.getElementById('form_status').value = 'draft';
+                document.getElementById('draft_id').value = '';
+            }
+            
+            // Reset to section 1
             state.currentSection = 1;
             document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
             const section1 = document.querySelector('.form-section[data-section="1"]');
@@ -1471,6 +2216,7 @@ Western Area Urban District||West 1 Zone`;
             }
             
             updateProgress();
+            updateSubmitButton();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
             // Re-initialize signature pads
@@ -1573,7 +2319,10 @@ Western Area Urban District||West 1 Zone`;
             }
             
             // Show loading state
-            if (statusIcon) statusIcon.classList.add('loading');
+            if (statusIcon) {
+                statusIcon.classList.remove('success', 'error');
+                statusIcon.classList.add('loading');
+            }
             if (statusText) statusText.textContent = 'Capturing GPS location...';
             if (captureBtn) {
                 captureBtn.disabled = true;
@@ -1609,8 +2358,8 @@ Western Area Urban District||West 1 Zone`;
                     
                     // Update UI
                     if (statusIcon) {
-                        statusIcon.classList.remove('loading');
-                        statusIcon.classList.add('online');
+                        statusIcon.classList.remove('loading', 'error');
+                        statusIcon.classList.add('success');
                     }
                     if (statusText) statusText.textContent = 'GPS location captured successfully!';
                     if (coordsText) coordsText.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
@@ -1624,7 +2373,7 @@ Western Area Urban District||West 1 Zone`;
                 (error) => {
                     // Error
                     if (statusIcon) {
-                        statusIcon.classList.remove('loading');
+                        statusIcon.classList.remove('loading', 'success');
                         statusIcon.classList.add('error');
                     }
                     
@@ -1656,6 +2405,13 @@ Western Area Urban District||West 1 Zone`;
                 }
             );
         }
+
+        // Close modal when clicking outside
+        document.getElementById('draftsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDraftsModal();
+            }
+        });
 
         init();
     </script>
