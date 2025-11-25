@@ -797,6 +797,13 @@
         .draft-item-title {
             font-weight: 700;
             color: #004080;
+            font-size: 16px;
+        }
+
+        .draft-item-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
         }
 
         .draft-item-date {
@@ -807,6 +814,7 @@
         .draft-item-actions {
             display: flex;
             gap: 10px;
+            margin-top: 10px;
         }
 
         .draft-action-btn {
@@ -834,6 +842,114 @@
             color: #6c757d;
             padding: 40px;
             font-size: 14px;
+        }
+
+        /* Draft Name Modal */
+        .draft-name-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            padding: 20px;
+        }
+
+        .draft-name-modal.show {
+            display: flex;
+        }
+
+        .draft-name-content {
+            background: #ffffff;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            border: 4px double #004080;
+        }
+
+        .draft-name-header {
+            background: #ffc107;
+            color: #000000;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .draft-name-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .draft-name-body {
+            padding: 30px;
+        }
+
+        .draft-name-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #000000;
+            font-size: 14px;
+        }
+
+        .draft-name-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border: 2px solid #004080;
+            border-radius: 6px;
+            color: #000000;
+            font-size: 16px;
+            font-family: 'Oswald', Arial, sans-serif;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .draft-name-input:focus {
+            outline: none;
+            border-color: #ffc107;
+        }
+
+        .draft-name-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .draft-name-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Oswald', Arial, sans-serif;
+            text-transform: uppercase;
+            border: 2px solid;
+        }
+
+        .draft-name-btn.cancel {
+            background: #ffffff;
+            color: #004080;
+            border-color: #004080;
+        }
+
+        .draft-name-btn.cancel:hover {
+            background: #f8f9fa;
+        }
+
+        .draft-name-btn.save {
+            background: #ffc107;
+            color: #000000;
+            border-color: #ffc107;
+        }
+
+        .draft-name-btn.save:hover {
+            background: #e0a800;
+            border-color: #e0a800;
         }
 
         /* Form Status Badge */
@@ -1011,6 +1127,23 @@
             </div>
             <div class="modal-body" id="draftsModalBody">
                 <!-- Drafts will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- DRAFT NAME MODAL -->
+    <div class="draft-name-modal" id="draftNameModal">
+        <div class="draft-name-content">
+            <div class="draft-name-header">
+                <h3 class="draft-name-title">💾 SAVE DRAFT</h3>
+            </div>
+            <div class="draft-name-body">
+                <label class="draft-name-label">ENTER A NAME FOR THIS DRAFT:</label>
+                <input type="text" class="draft-name-input" id="draftNameInput" placeholder="e.g., Bo Central Prison - Morning Shift">
+                <div class="draft-name-buttons">
+                    <button class="draft-name-btn cancel" onclick="cancelDraftName()">CANCEL</button>
+                    <button class="draft-name-btn save" onclick="confirmSaveDraft()">SAVE DRAFT</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1396,8 +1529,9 @@ Western Area Urban District||West 3 Zone`;
             districtChiefdomMap: {},
             signaturePads: {},
             gpsLocation: null,
-            formStatus: 'draft', // draft, finalized, submitted
-            currentDraftId: null
+            formStatus: 'draft',
+            currentDraftId: null,
+            currentDraftName: null
         };
 
         // ============================================
@@ -1576,7 +1710,7 @@ Western Area Urban District||West 3 Zone`;
                 }
                 
                 // Always show Save as Draft button
-                html += '<button type="button" class="btn-nav btn-draft" onclick="saveAsDraft()">💾 SAVE DRAFT</button>';
+                html += '<button type="button" class="btn-nav btn-draft" onclick="showDraftNameModal()">💾 SAVE DRAFT</button>';
                 
                 if (isLastSection) {
                     // Last section: Show Finalize and Submit buttons
@@ -1608,6 +1742,13 @@ Western Area Urban District||West 3 Zone`;
             document.getElementById('dataForm').addEventListener('submit', handleFormSubmit);
             window.addEventListener('online', handleOnlineEvent);
             window.addEventListener('offline', handleOfflineEvent);
+            
+            // Add enter key listener for draft name input
+            document.getElementById('draftNameInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    confirmSaveDraft();
+                }
+            });
             
             setupCascadingListeners();
         }
@@ -1806,13 +1947,54 @@ Western Area Urban District||West 3 Zone`;
         }
 
         // ============================================
-        // DRAFT MANAGEMENT
+        // DRAFT MANAGEMENT WITH CUSTOM NAMES
         // ============================================
-        function saveAsDraft() {
+        function showDraftNameModal() {
+            const modal = document.getElementById('draftNameModal');
+            const input = document.getElementById('draftNameInput');
+            
+            // Set default name if editing existing draft
+            if (state.currentDraftName) {
+                input.value = state.currentDraftName;
+            } else {
+                // Generate default name based on form data
+                const facilityName = document.querySelector('[name="facility_name"]')?.value || '';
+                const sprayDate = document.querySelector('[name="spray_date"]')?.value || '';
+                const defaultName = facilityName || sprayDate || 'Unnamed Draft';
+                input.value = defaultName;
+            }
+            
+            modal.classList.add('show');
+            input.focus();
+            input.select();
+        }
+
+        function cancelDraftName() {
+            const modal = document.getElementById('draftNameModal');
+            modal.classList.remove('show');
+        }
+
+        function confirmSaveDraft() {
+            const draftName = document.getElementById('draftNameInput').value.trim();
+            
+            if (!draftName) {
+                showNotification('Please enter a name for the draft', 'warning');
+                return;
+            }
+            
+            // Close modal
+            cancelDraftName();
+            
+            // Save draft with the provided name
+            saveAsDraft(draftName);
+        }
+
+        function saveAsDraft(draftName) {
             const formData = new FormData(document.getElementById('dataForm'));
             
             const data = {
                 draftId: state.currentDraftId || generateDraftId(),
+                draftName: draftName,
                 savedAt: new Date().toISOString(),
                 savedBy: sessionStorage.getItem('username') || 'admin',
                 formStatus: 'draft',
@@ -1841,10 +2023,11 @@ Western Area Urban District||West 3 Zone`;
             
             localStorage.setItem('formDrafts', JSON.stringify(state.drafts));
             state.currentDraftId = data.draftId;
+            state.currentDraftName = draftName;
             document.getElementById('draft_id').value = data.draftId;
             
             updateDraftCount();
-            showNotification('Draft saved successfully!', 'success');
+            showNotification(`Draft "${draftName}" saved successfully!`, 'success');
         }
 
         function generateDraftId() {
@@ -1859,17 +2042,24 @@ Western Area Urban District||West 3 Zone`;
                 modalBody.innerHTML = '<div class="no-drafts">No saved drafts</div>';
             } else {
                 let html = '';
-                state.drafts.forEach((draft, index) => {
+                // Sort drafts by savedAt date (newest first)
+                const sortedDrafts = [...state.drafts].sort((a, b) => 
+                    new Date(b.savedAt) - new Date(a.savedAt)
+                );
+                
+                sortedDrafts.forEach((draft, index) => {
                     const savedDate = new Date(draft.savedAt).toLocaleString();
-                    const facilityName = draft.facility_name || 'Unnamed';
-                    const sprayDate = draft.spray_date || 'No date';
+                    const draftName = draft.draftName || 'Unnamed Draft';
+                    const facilityName = draft.facility_name || '';
+                    const sprayDate = draft.spray_date || '';
                     
                     html += `
                         <div class="draft-item">
                             <div class="draft-item-header">
                                 <div>
-                                    <div class="draft-item-title">${facilityName}</div>
-                                    <div class="draft-item-date">Spray Date: ${sprayDate}</div>
+                                    <div class="draft-item-title">${draftName}</div>
+                                    ${facilityName ? `<div class="draft-item-subtitle">Facility: ${facilityName}</div>` : ''}
+                                    ${sprayDate ? `<div class="draft-item-subtitle">Date: ${sprayDate}</div>` : ''}
                                 </div>
                                 <div class="draft-item-date">Saved: ${savedDate}</div>
                             </div>
@@ -1902,13 +2092,14 @@ Western Area Urban District||West 3 Zone`;
             
             // Load draft data
             state.currentDraftId = draftId;
+            state.currentDraftName = draft.draftName;
             state.formStatus = draft.formStatus || 'draft';
             document.getElementById('draft_id').value = draftId;
             document.getElementById('form_status').value = state.formStatus;
             
             // Populate form fields
             Object.keys(draft).forEach(key => {
-                if (['draftId', 'savedAt', 'savedBy', 'formStatus', 'currentSection'].includes(key)) return;
+                if (['draftId', 'draftName', 'savedAt', 'savedBy', 'formStatus', 'currentSection'].includes(key)) return;
                 
                 const field = document.querySelector(`[name="${key}"]`);
                 if (field) {
@@ -1974,17 +2165,21 @@ Western Area Urban District||West 3 Zone`;
             updateProgress();
             updateSubmitButton();
             closeDraftsModal();
-            showNotification('Draft loaded successfully!', 'success');
+            showNotification(`Draft "${draft.draftName}" loaded successfully!`, 'success');
         }
 
         function deleteDraft(draftId) {
-            if (!confirm('Are you sure you want to delete this draft?')) return;
+            const draft = state.drafts.find(d => d.draftId === draftId);
+            const draftName = draft ? draft.draftName : 'this draft';
+            
+            if (!confirm(`Are you sure you want to delete "${draftName}"?`)) return;
             
             state.drafts = state.drafts.filter(d => d.draftId !== draftId);
             localStorage.setItem('formDrafts', JSON.stringify(state.drafts));
             
             if (state.currentDraftId === draftId) {
                 state.currentDraftId = null;
+                state.currentDraftName = null;
                 document.getElementById('draft_id').value = '';
             }
             
@@ -2030,7 +2225,11 @@ Western Area Urban District||West 3 Zone`;
             updateSubmitButton();
             
             // Auto-save draft with finalized status
-            saveAsDraft();
+            if (state.currentDraftName) {
+                saveAsDraft(state.currentDraftName);
+            } else {
+                showDraftNameModal();
+            }
             
             showNotification('Form finalized! You can now submit.', 'success');
         }
@@ -2203,6 +2402,7 @@ Western Area Urban District||West 3 Zone`;
             if (resetStatus) {
                 state.formStatus = 'draft';
                 state.currentDraftId = null;
+                state.currentDraftName = null;
                 document.getElementById('form_status').value = 'draft';
                 document.getElementById('draft_id').value = '';
             }
@@ -2406,10 +2606,16 @@ Western Area Urban District||West 3 Zone`;
             );
         }
 
-        // Close modal when clicking outside
+        // Close modals when clicking outside
         document.getElementById('draftsModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDraftsModal();
+            }
+        });
+
+        document.getElementById('draftNameModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelDraftName();
             }
         });
 
